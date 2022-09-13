@@ -123,4 +123,19 @@ public class RegExprTests
             (new Uri("https://www.google.com"), "Google (Alphabet)")
         });
     }
+
+    [Fact]
+    public void HTTP_URL_works()
+    {
+        // Given
+        string html = "<a href=\"http://www.google.com\" title=\"Google (Alphabet)\"";
+        
+        // When
+        var listOfUrlsWithTitles = RegExpr.Urls(html);
+
+        // Then
+        listOfUrlsWithTitles.Should().BeEquivalentTo(new[]{
+            (new Uri("http://www.google.com"), "Google (Alphabet)")
+        });
+    }
 }

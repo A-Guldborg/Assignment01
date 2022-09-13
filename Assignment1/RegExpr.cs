@@ -33,7 +33,7 @@ public static class RegExpr
     }
 
     public static IEnumerable<(Uri url, string title)> Urls(string html) {
-        var pattern = "(?:href=\")(?<url>https://[\\w\\./\\(\\)]+).+?(?:title=\")(?<title>[^\"]*)";
+        var pattern = "(?:href=\")(?<url>https?://[\\w\\./\\(\\)]+).+?(?:title=\")(?<title>[^\"]*)";
 
         foreach (Match match in Regex.Matches(html, pattern)) {
             string url = match.Groups["url"].Value;
