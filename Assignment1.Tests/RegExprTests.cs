@@ -138,4 +138,64 @@ public class RegExprTests
             (new Uri("http://www.google.com"), "Google (Alphabet)")
         });
     }
+
+    [Fact]
+    public void URLS_With_Parentheses()
+    {
+        // Given
+        string html = "<a href=\"https://www.google.com/(Test)\" title=\"Google (Alphabet)\"";
+        
+        // When
+        var listOfUrlsWithTitles = RegExpr.Urls(html);
+
+        // Then
+        listOfUrlsWithTitles.Should().BeEquivalentTo(new[]{
+            (new Uri("https://www.google.com/(Test)"), "Google (Alphabet)")
+        });
+    }
+
+    [Fact]
+    public void URLS_With_Preceding_Tag()
+    {
+        // Given
+        string html = "<a test=\"Test\" href=\"https://www.google.com/\" title=\"Google (Alphabet)\"";
+        
+        // When
+        var listOfUrlsWithTitles = RegExpr.Urls(html);
+
+        // Then
+        listOfUrlsWithTitles.Should().BeEquivalentTo(new[]{
+            (new Uri("https://www.google.com/"), "Google (Alphabet)")
+        });
+    }
+
+    [Fact]
+    public void URLS_With_Middle_Tag()
+    {
+        // Given
+        string html = "<a href=\"https://www.google.com/\" test=\"Test\" title=\"Google (Alphabet)\"";
+        
+        // When
+        var listOfUrlsWithTitles = RegExpr.Urls(html);
+
+        // Then
+        listOfUrlsWithTitles.Should().BeEquivalentTo(new[]{
+            (new Uri("https://www.google.com/"), "Google (Alphabet)")
+        });
+    }
+
+    [Fact]
+    public void URLS_With_Posterior_Tag()
+    {
+        // Given
+        string html = "<a href=\"https://www.google.com/\" title=\"Google (Alphabet)\" test=\"Test\"";
+        
+        // When
+        var listOfUrlsWithTitles = RegExpr.Urls(html);
+
+        // Then
+        listOfUrlsWithTitles.Should().BeEquivalentTo(new[]{
+            (new Uri("https://www.google.com/"), "Google (Alphabet)")
+        });
+    }
 }
