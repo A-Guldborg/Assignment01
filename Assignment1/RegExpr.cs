@@ -31,4 +31,14 @@ public static class RegExpr
             yield return Regex.Replace(matchtext, removepattern, "");
         }
     }
+
+    public static IEnumerable<(Uri url, string title)> Urls(string html) {
+        var pattern = "(?:href=\")(?<url>https://[\\w\\./\\(\\)]+).+?(?:title=\")(?<title>[^\"]*)";
+
+        foreach (Match match in Regex.Matches(html, pattern)) {
+            string url = match.Groups["url"].Value;
+            string title = match.Groups["title"].Value;
+            yield return (new Uri(url), title);
+        }
+    }
 }
