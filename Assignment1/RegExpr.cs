@@ -22,5 +22,13 @@ public static class RegExpr
         }
     }
 
-    public static IEnumerable<string> InnerText(string html, string tag) => throw new NotImplementedException();
+    public static IEnumerable<string> InnerText(string html, string tag) {
+        var matchpattern = "<"+tag+"[^>]*>(?<innertext>.*?)</"+tag+">";
+        var removepattern = "<.*?>";
+
+        foreach (Match match in Regex.Matches(html, matchpattern)) {
+            string matchtext = match.Groups["innertext"].Value;
+            yield return Regex.Replace(matchtext, removepattern, "");
+        }
+    }
 }
