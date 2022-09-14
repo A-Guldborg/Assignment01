@@ -33,12 +33,14 @@ public static class RegExpr
     }
 
     public static IEnumerable<(Uri url, string title)> Urls(string html) {
-        var pattern = "(?:href=\")(?<url>[\\w\\./:\\(\\)]+).+?(?:title=\")(?<title>[^\"]*)";
+        var pattern = "<a(( *href=\"(?<url>.*?)\" *| *title=\"(?<title>.*?)\" *)| *[^<>]*?=\".*?\" *?)*>(?<innertext>.*?)</a>";
+        // var pattern = "<a[.((?:href=\")https?://[\\w\\./]*)()]*>(?<innerText>[^<]*)</a>";
+        // var pattern = "<a(?<attributes>.*)>(?<innerText>.*)</a>";
 
         foreach (Match match in Regex.Matches(html, pattern)) {
-            string url = match.Groups["url"].Value;
-            string title = match.Groups["title"].Value;
-            yield return (new Uri(url), title);
+            // yield return (new Uri(match.ToString()), match.ToString());
+            yield return (new Uri(match.Groups["url"].Value), match.Groups["title"].Value != "" ? match.Groups["title"].Value : match.Groups["innertext"].Value);
+            // yield return (new Uri(match.Groups["url"].Value), match.Groups["title"].Value);
         }
     }
 }

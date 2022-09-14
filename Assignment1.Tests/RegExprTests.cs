@@ -98,7 +98,7 @@ public class RegExprTests
     public void Simple_URLs_From_HTML()
     {
         // Given
-        string html = "<a href=\"https://www.google.com\" title=\"Google\"";
+        string html = "<a href=\"https://www.google.com\" title=\"Google\">test</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -113,7 +113,7 @@ public class RegExprTests
     public void URLs_Where_Title_Has_Parentheses()
     {
         // Given
-        string html = "<a href=\"https://www.google.com\" title=\"Google (Alphabet)\"";
+        string html = "<a href=\"https://www.google.com\" title=\"Google (Alphabet)\">Title with parentheses</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -128,7 +128,7 @@ public class RegExprTests
     public void HTTP_URL_works()
     {
         // Given
-        string html = "<a href=\"http://www.google.com\" title=\"Google (Alphabet)\"";
+        string html = "<a href=\"http://www.google.com\" title=\"Google (Alphabet)\">Test with HTTP</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -143,7 +143,7 @@ public class RegExprTests
     public void URLS_With_Parentheses()
     {
         // Given
-        string html = "<a href=\"https://www.google.com/(Test)\" title=\"Google (Alphabet)\"";
+        string html = "<a href=\"https://www.google.com/(Test)\" title=\"Google (Alphabet)\">URLs with parentheses</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -158,7 +158,7 @@ public class RegExprTests
     public void URLS_With_Preceding_Tag()
     {
         // Given
-        string html = "<a test=\"Test\" href=\"https://www.google.com/\" title=\"Google (Alphabet)\"";
+        string html = "<a test=\"Test\" href=\"https://www.google.com/\" title=\"Google (Alphabet)\">Test with preceding tag</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -173,7 +173,7 @@ public class RegExprTests
     public void URLS_With_Middle_Tag()
     {
         // Given
-        string html = "<a href=\"https://www.google.com/\" test=\"Test\" title=\"Google (Alphabet)\"";
+        string html = "<a href=\"https://www.google.com/\" test=\"Test\" title=\"Google (Alphabet)\">Urls with middle tag</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -188,7 +188,7 @@ public class RegExprTests
     public void URLS_With_Posterior_Tag()
     {
         // Given
-        string html = "<a href=\"https://www.google.com/\" title=\"Google (Alphabet)\" test=\"Test\"";
+        string html = "<a href=\"https://www.google.com/\" title=\"Google (Alphabet)\" test=\"Test\">Test with posterior tag</a>";
         
         // When
         var listOfUrlsWithTitles = RegExpr.Urls(html);
@@ -294,5 +294,31 @@ public class RegExprTests
             "The phrase regular expressions (and consequently, regexes) is often used to mean the specific, standard textual syntax for representing patterns that matching text need to conform to."
         };
         Assert.Equal(shouldBe, output);
+    }
+
+    [Fact]
+    public void URLs_Without_Title()
+    {
+        // Given
+        string html = "<a href=\"https://www.google.com\">Inner Text</a>";
+    
+        // When
+        var tuples = RegExpr.Urls(html);
+    
+        // Then
+        tuples.Should().BeEquivalentTo(new[]{(new Uri("https://www.google.com"), "Inner Text")});
+    }
+
+    [Fact]
+    public void URL_With_Title_Before_Href_Attribute()
+    {
+        // Given
+        string html = "<a title=\"This is a title before link\" href=\"https://www.facebook.com\">Inner Text</a>";
+    
+        // When
+        var tuples = RegExpr.Urls(html);
+    
+        // Then
+        tuples.Should().BeEquivalentTo(new[]{(new Uri("https://www.facebook.com"), "This is a title before link")});
     }
 }
