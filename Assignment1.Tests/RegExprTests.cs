@@ -295,17 +295,4 @@ public class RegExprTests
         };
         Assert.Equal(shouldBe, output);
     }
-
-    [Fact]
-    public void URLs_Without_Title()
-    {
-        // Given
-        string html = "<a href=\"https://www.google.com\">Inner Text</a>";
-    
-        // When
-        var tuples = RegExpr.Urls(html);
-    
-        // Then
-        tuples.Should().BeEquivalentTo(new[]{("https://www.google.com", "Inner Text")});
-    }
 }
